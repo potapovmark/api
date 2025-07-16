@@ -1,4 +1,3 @@
-// === СТИЛИ ДЛЯ ВСЕГО ПРИЛОЖЕНИЯ (ТОЛЬКО ПОЛЕ ВВОДА И СПИСОК) ===
 const style = document.createElement('style')
 style.textContent = `
   body {
@@ -142,7 +141,6 @@ style.textContent = `
 `
 document.head.appendChild(style)
 
-// === СОЗДАНИЕ ОСНОВНОЙ РАЗМЕТКИ ===
 const container = document.createElement('div')
 container.className = 'center-container'
 
