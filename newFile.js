@@ -1,3 +1,176 @@
+// === СТИЛИ ДЛЯ ВСЕГО ПРИЛОЖЕНИЯ (ТОЛЬКО ПОЛЕ ВВОДА И СПИСОК) ===
+const style = document.createElement('style')
+style.textContent = `
+  body {
+    background: #bdbdbd;
+    min-height: 100vh;
+    margin: 0;
+    font-family: Arial, sans-serif;
+  }
+  .center-container {
+    max-width: 500px;
+    margin: 40px auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  .autocomplete-input {
+    width: 100%;
+    max-width: 500px;
+    font-size: 20px;
+    padding: 8px;
+    margin: 0 0 16px 0;
+    border: 2px solid #111;
+    border-radius: 0;
+    box-sizing: border-box;
+    outline: none;
+    display: block;
+  }
+  .autocomplete-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    width: 100%;
+    max-width: 496px;
+    position: absolute;
+    background: #fff;
+    border: 2px solid #111;
+    z-index: 1000;
+    font-size: 20px;
+    display: none;
+    left: 50%;
+    transform: translateX(-50%);
+    top: 43px;
+    border-top: none;
+  }
+  .autocomplete-list li {
+    cursor: pointer;
+    padding: 10px 16px;
+    border-bottom: 2px solid #111;
+    background: #fff;
+    transition: background 0.2s;
+    background: #e3e3e3;
+  }
+  .autocomplete-list li:last-child {
+    border-bottom: none;
+  }
+  .autocomplete-list li:hover {
+    background: #b2ebf2;
+  }
+  .repo-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    width: 100%;
+    max-width: 600px;
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+  .repo-card {
+    background: #e27beb;
+    border: 2px solid #111;
+    margin-bottom: 0;
+    padding: 16px 16px 16px 16px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: relative;
+    min-height: 60px;
+    font-size: 22px;
+    box-sizing: border-box;
+    border-radius: 0;
+  }
+  .repo-card + .repo-card {
+    border-top: none;
+  }
+  .repo-info {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    font-size: 22px;
+    color: #111;
+    font-weight: normal;
+    line-height: 1.2;
+  }
+  .repo-info span {
+    display: block;
+    color: #111;
+    font-size: 22px;
+    margin-bottom: 0;
+    font-weight: normal;
+  }
+  .repo-link {
+    color: #111;
+    text-decoration: none;
+    font-weight: normal;
+    font-size: 22px;
+    word-break: break-all;
+  }
+  .remove-btn {
+    background: none;
+    border: none;
+    color: #ff1818;
+    font-size: 42px;
+    font-weight: normal;
+    cursor: pointer;
+    line-height: 1;
+    margin-left: 16px;
+    margin-right: 0;
+    padding: 0;
+    transition: color 0.2s;
+    position: static;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 42px;
+    height: 42px;
+  }
+  .remove-btn svg {
+    display: block;
+    width: 42px;
+    height: 42px;
+    stroke: #ff1818;
+    stroke-width: 4px;
+    stroke-linecap: butt;
+    stroke-linejoin: miter;
+    background: none;
+  }
+  .remove-btn:hover {
+    color: #b71c1c;
+  }
+`
+document.head.appendChild(style)
+
+// === СОЗДАНИЕ ОСНОВНОЙ РАЗМЕТКИ ===
+const container = document.createElement('div')
+container.className = 'center-container'
+
+const input = document.createElement('input')
+input.id = 'search'
+input.type = 'text'
+input.placeholder = 'Search repositories...'
+input.autocomplete = 'off'
+input.className = 'autocomplete-input'
+
+const autocompleteList = document.createElement('ul')
+autocompleteList.id = 'autocomplete-list'
+autocompleteList.className = 'autocomplete-list'
+autocompleteList.style.position = 'absolute'
+
+const repoList = document.createElement('ul')
+repoList.id = 'repo-list'
+repoList.className = 'repo-list'
+
+container.appendChild(input)
+container.appendChild(autocompleteList)
+container.appendChild(repoList)
+document.body.appendChild(container)
+
+document.body.style.position = 'relative'
+
+let repos = []
+
 function debounce(fn, delay) {
   let timeout
   return function (...args) {
@@ -17,50 +190,6 @@ async function searchRepos(query) {
   return data.items
 }
 
-const input = document.createElement('input')
-input.id = 'search'
-input.type = 'text'
-input.placeholder = 'Search repositories...'
-input.autocomplete = 'off'
-input.style.display = 'block'
-input.style.margin = '30px auto 0 auto'
-input.style.width = '90%'
-input.style.maxWidth = '400px'
-input.style.fontSize = '18px'
-input.style.padding = '8px'
-
-const autocompleteList = document.createElement('ul')
-autocompleteList.id = 'autocomplete-list'
-autocompleteList.style.listStyle = 'none'
-autocompleteList.style.padding = '0'
-autocompleteList.style.margin = '0 auto'
-autocompleteList.style.width = '90%'
-autocompleteList.style.maxWidth = '400px'
-autocompleteList.style.position = 'absolute'
-autocompleteList.style.background = '#fff'
-autocompleteList.style.border = '1px solid #ccc'
-autocompleteList.style.zIndex = '1000'
-autocompleteList.style.boxShadow = '0 2px 8px rgba(0,0,0,0.08)'
-autocompleteList.style.fontSize = '16px'
-autocompleteList.style.display = 'none'
-
-const repoList = document.createElement('ul')
-repoList.id = 'repo-list'
-repoList.style.listStyle = 'none'
-repoList.style.padding = '0'
-repoList.style.margin = '30px auto 0 auto'
-repoList.style.width = '90%'
-repoList.style.maxWidth = '400px'
-
-window.addEventListener('DOMContentLoaded', () => {
-  document.body.style.position = 'relative'
-  document.body.appendChild(input)
-  document.body.appendChild(autocompleteList)
-  document.body.appendChild(repoList)
-})
-
-let repos = []
-
 input.addEventListener(
   'input',
   debounce(async function () {
@@ -74,12 +203,9 @@ input.addEventListener(
       results.forEach((repo) => {
         const li = document.createElement('li')
         li.textContent = repo.full_name
-        li.style.cursor = 'pointer'
-        li.style.padding = '8px 12px'
-        li.style.borderBottom = '1px solid #eee'
         li.addEventListener(
           'mouseover',
-          () => (li.style.background = '#f5f5f5')
+          () => (li.style.background = '#b2ebf2')
         )
         li.addEventListener('mouseout', () => (li.style.background = ''))
         li.addEventListener('click', () => addRepo(repo))
@@ -102,22 +228,18 @@ function renderRepoList() {
   repoList.innerHTML = ''
   repos.forEach((repo) => {
     const li = document.createElement('li')
-    li.style.display = 'flex'
-    li.style.alignItems = 'center'
-    li.style.justifyContent = 'space-between'
-    li.style.padding = '10px 0'
-    li.style.borderBottom = '1px solid #eee'
-    const info = document.createElement('span')
-    info.innerHTML = `<strong>${repo.name}</strong> (${repo.owner.login}) ★${repo.stargazers_count}`
+    li.className = 'repo-card'
+    const info = document.createElement('div')
+    info.className = 'repo-info'
+    info.innerHTML = `
+      <span>Name: ${repo.name}</span>
+      <span>Owner: ${repo.owner.login}</span>
+      <span>Stars: ${repo.stargazers_count}</span>
+    `
     const removeBtn = document.createElement('button')
-    removeBtn.textContent = 'Remove'
-    removeBtn.style.marginLeft = '10px'
-    removeBtn.style.background = '#e74c3c'
-    removeBtn.style.color = '#fff'
-    removeBtn.style.border = 'none'
-    removeBtn.style.padding = '4px 10px'
-    removeBtn.style.borderRadius = '4px'
-    removeBtn.style.cursor = 'pointer'
+    removeBtn.className = 'remove-btn'
+    removeBtn.title = 'Remove'
+    removeBtn.innerHTML = `<svg viewBox="0 0 42 42"><line x1="6" y1="6" x2="36" y2="36"/><line x1="36" y1="6" x2="6" y2="36"/></svg>`
     removeBtn.addEventListener('click', () => {
       repos = repos.filter((r) => r.id !== repo.id)
       renderRepoList()
