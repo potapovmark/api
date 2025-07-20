@@ -4,8 +4,14 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>GitHub Repo Autocomplete</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
+  <div class="center-container">
+    <input id="search" type="text" placeholder="Search repositories..." autocomplete="off" class="autocomplete-input">
+    <ul id="autocomplete-list" class="autocomplete-list" style="position:absolute;"></ul>
+    <ul id="repo-list" class="repo-list"></ul>
+  </div>
   <script src='/newFile.js'></script>
 </body>
 </html>
